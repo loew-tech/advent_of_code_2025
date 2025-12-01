@@ -2,6 +2,13 @@ import inspect
 import sys
 
 
+from utils import test_problem
+
+
+def day_1(part='A') -> int:
+    test_problem(day=1)
+
+
 if __name__ == '__main__':
     args = sys.argv[1:] if sys.argv[1:] else range(1, 12)
     args = (f'day_{i}' for i in args)
