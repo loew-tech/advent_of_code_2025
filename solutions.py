@@ -8,8 +8,12 @@ def day_1(part='A') -> int:
     data = read_input(day=1)
     position, count, sign = 50, 0, {'R': 1, 'L': -1}
     for direction, *magnitude in data:
-        position = (position + sign[direction] * int(''.join(magnitude))) % 100
-        count += not position
+        mag = int(''.join(magnitude))
+        cycles = mag // 100
+        new_pos = position + sign[direction] * (mag % 100)
+        count += not new_pos % 100 if part.upper() == 'A' \
+            else bool(position) * (not 0 < new_pos < 100) + cycles
+        position = new_pos % 100
     return count
 
 
