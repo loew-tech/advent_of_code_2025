@@ -9,7 +9,7 @@ from constants import ADVENT_URI
 def read_input(
         day: int | str,
         delim: str = '\n',
-        year: int | str = None,
+        year: int | str = 2025,
         parse: Callable[[List[str] | str], any] = None
 ) -> any:
     year = year if year is not None else datetime.now().year
