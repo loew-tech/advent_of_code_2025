@@ -31,6 +31,11 @@ def day_2(part='A') -> int:
             mid = len(s) // 2
             if s[:mid] == s[mid:]:
                 sum_ += i
+            elif not part.upper() == 'A':
+                for j in range(1, len(s)//2 + 1):
+                    if set(s.split(s[:j])) == {''}:
+                        sum_ += i
+                        break
     return sum_
 
 
