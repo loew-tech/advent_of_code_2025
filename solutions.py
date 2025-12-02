@@ -9,12 +9,29 @@ def day_1(part='A') -> int:
     position, count, sign = 50, 0, {'R': 1, 'L': -1}
     for direction, *magnitude in data:
         mag = int(''.join(magnitude))
-        cycles = mag // 100
         new_pos = position + sign[direction] * (mag % 100)
         count += not new_pos % 100 if part.upper() == 'A' \
-            else bool(position) * (not 0 < new_pos < 100) + cycles
+            else (position and not 0 < new_pos < 100) + mag // 100
         position = new_pos % 100
     return count
+
+
+def day_2(part='A') -> int:
+    def parse(dat):
+        ret = []
+        for entry in dat:
+            ret.append(map(int, entry.split('-')))
+        return ret
+
+    data = read_input(day=2, delim=',', parse=parse)
+    sum_ = 0
+    for low, high in data:
+        for i in range(low, high+1):
+            s = str(i)
+            mid = len(s) // 2
+            if s[:mid] == s[mid:]:
+                sum_ += i
+    return sum_
 
 
 if __name__ == '__main__':
