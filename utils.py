@@ -10,8 +10,8 @@ def read_input(
         day: int | str,
         year: int | str = 2025,
         delim: str = '\n',
-        parse: Callable[[List[str] | str], any] = None
-) -> any:
+        parse: Callable[[str], any] = None
+) -> List[any] | str:
     year = year if year is not None else datetime.now().year
     with open('.env') as env_:
         session_id = env_.read().strip().split('\n')[0]
@@ -20,4 +20,4 @@ def read_input(
     data = None
     if response.status_code == HTTPStatus.OK:
         data = response.text.strip().split(delim) if delim else response.text
-    return data if parse is None else parse(data)
+    return data if parse is None else [parse(e) for e in data]

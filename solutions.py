@@ -17,13 +17,7 @@ def day_1(part='A') -> int:
 
 
 def day_2(part='A') -> int:
-    def parse(dat):
-        ret = []
-        for entry in dat:
-            ret.append(map(int, entry.split('-')))
-        return ret
-
-    data = read_input(day=2, delim=',', parse=parse)
+    data = read_input(day=2, delim=',', parse=lambda x: map(int, x.split('-')))
     sum_ = 0
     for low, high in data:
         for i in range(low, high+1):
