@@ -1,3 +1,4 @@
+from collections import defaultdict
 import inspect
 import sys
 
@@ -33,6 +34,20 @@ def day_2(part='A') -> int:
     return sum_
 
 
+def day_3(part='A') -> int:
+    data, sum_ = read_input(day=3), 0
+    for battery in data:
+        indices = {int(bank): len(battery)-1-i for i, bank in
+                   enumerate(battery[::-1])}
+        max2_, i = None, 10
+        while max2_ is None and (i := i-1):
+            if (i_max_ := indices.get(i, len(battery)-1)) == len(battery) - 1:
+                continue
+            max2_ = int(max(battery[i_max_+1:]))
+        sum_ += i * 10 + max2_
+    return sum_
+
+
 if __name__ == '__main__':
     args = sys.argv[1:] if sys.argv[1:] else range(1, 12)
     args = (f'day_{i}' for i in args)
@@ -44,4 +59,4 @@ if __name__ == '__main__':
             print(f'{day}()= NotImplemented')
             continue
         print(f'{day}()= {funcs[day]()}')
-        print(f'{day}(part="B")= {funcs[day](part="B")}')
+        # print(f'{day}(part="B")= {funcs[day](part="B")}')
