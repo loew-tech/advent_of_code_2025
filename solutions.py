@@ -35,16 +35,29 @@ def day_2(part='A') -> int:
 
 
 def day_3(part='A') -> int:
+
+    abs_max = '9'
+
+    def get_next_max(j, rem: int, bat: str) -> int:
+        max_, index = '', None
+        for k, bank in enumerate(bat[j:-rem if rem else len(bat)]):
+            if bank > max_:
+                max_, index = bank, k
+                if max_ == abs_max:
+                    break
+        return index + j
+
     data, sum_ = read_input(day=3), 0
+    sum_ = 0
+
     for battery in data:
-        indices = {int(bank): len(battery)-1-i for i, bank in
-                   enumerate(battery[::-1])}
-        max2_, i = None, 10
-        while max2_ is None and (i := i-1):
-            if (i_max_ := indices.get(i, len(battery)-1)) == len(battery) - 1:
-                continue
-            max2_ = int(max(battery[i_max_+1:]))
-        sum_ += i * 10 + max2_
+        limit = 2 if part.upper() == 'A' else 12
+        banks, i, remaining = [], -1, limit
+        while len(banks) < limit:
+            remaining -= 1
+            i = get_next_max(i+1, remaining, battery)
+            banks.append(battery[i])
+        sum_ += int(''.join(banks))
     return sum_
 
 
@@ -59,4 +72,4 @@ if __name__ == '__main__':
             print(f'{day}()= NotImplemented')
             continue
         print(f'{day}()= {funcs[day]()}')
-        # print(f'{day}(part="B")= {funcs[day](part="B")}')
+        print(f'{day}(part="B")= {funcs[day](part="B")}')
