@@ -42,10 +42,11 @@ def day_4b_remove_rolls(counts: List[List[int]]):
         for y, x in sorted(to_move):
             removed += 1
             for yi, xi in DIRECTIONS:
-                if not inbounds(y + yi, x + xi, counts):
+                if not inbounds(y + yi, x + xi, counts) or \
+                        (y+yi, x+xi) in to_move:
                     continue
                 counts[y+yi][x+xi] -= 1
-                if counts[y+yi][x+xi] < 4 and (y+yi, x+xi) not in to_move:
+                if counts[y+yi][x+xi] < 4:
                     next_search.add((y+yi, x+xi))
             counts[y][x] = float('inf')
         to_move = next_search
