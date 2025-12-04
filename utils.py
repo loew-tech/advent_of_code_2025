@@ -33,21 +33,20 @@ def inbounds(y, x: int, grid: List[List[any] | str]) -> bool:
     return 0 <= y < len(grid) and 0 <= x < len(grid[y])
 
 
-def day_4b_remove_rolls(counts: List[List[int]]) -> int:
-    to_move = ((y, x) for y, row in enumerate(counts)
-               for x, v in enumerate(row) if v < 4)
-    removed = set()
+def day_4b_remove_rolls(counts: List[List[int]]):
+    to_move = set((y, x) for y, row in enumerate(counts)
+                  for x, v in enumerate(row) if v < 4)
+    removed = 0
     while to_move:
         next_search = set()
-        for y, x in to_move:
-            if (y, x) in removed:
-                continue
-            removed.add((y, x))
+        for y, x in sorted(to_move):
+            removed += 1
             for yi, xi in DIRECTIONS:
                 if not inbounds(y + yi, x + xi, counts):
                     continue
                 counts[y+yi][x+xi] -= 1
-                if counts[y+yi][x+xi] < 4:
+                if counts[y+yi][x+xi] < 4 and (y+yi, x+xi) not in to_move:
                     next_search.add((y+yi, x+xi))
+            counts[y][x] = float('inf')
         to_move = next_search
-    return len(removed)
+    return removed

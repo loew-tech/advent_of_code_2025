@@ -62,6 +62,11 @@ def day_3(part='A') -> int:
 
 def day_4(part='A') -> int:
     warehouse = read_input(day=4, parse=lambda ln: [c == '@' for c in ln])
+
+    # warehouse = '..@@.@@@@.\n@@@.@.@.@@\n@@@@@.@.@@\n@.@@@@..@.\n' \
+    #             '@@.@@@@.@@\n.@@@@@@@.@\n.@.@.@.@@@\n@.@@@.@@@@\n.@@@@@@@@.\n@.@.@@@.@.'
+    # warehouse = [[c == '@' for c in ln] for ln in warehouse.split('\n')]
+
     counts = [[0 if b else float('inf') for b in row] for row in warehouse]
     inbounds = get_inbounds(warehouse)
     for y, row in enumerate(warehouse):
