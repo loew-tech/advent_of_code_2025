@@ -1,8 +1,8 @@
-from collections import defaultdict
 import inspect
 import sys
 
-from utils import read_input
+from constants import DIRECTIONS
+from utils import read_input, get_inbounds
 
 
 def day_1(part='A') -> int:
@@ -21,13 +21,13 @@ def day_2(part='A') -> int:
     data = read_input(day=2, delim=',', parse=lambda x: map(int, x.split('-')))
     sum_ = 0
     for low, high in data:
-        for i in range(low, high+1):
+        for i in range(low, high + 1):
             s = str(i)
             mid = len(s) // 2
             if s[:mid] == s[mid:]:
                 sum_ += i
             elif not part.upper() == 'A':
-                for j in range(1, len(s)//2 + 1):
+                for j in range(1, len(s) // 2 + 1):
                     if set(s.split(s[:j])) == {''}:
                         sum_ += i
                         break
@@ -35,7 +35,6 @@ def day_2(part='A') -> int:
 
 
 def day_3(part='A') -> int:
-
     abs_max = '9'
 
     def get_next_max(j, rem: int, bat: str) -> int:
@@ -55,10 +54,21 @@ def day_3(part='A') -> int:
         banks, i, remaining = [], -1, limit
         while len(banks) < limit:
             remaining -= 1
-            i = get_next_max(i+1, remaining, battery)
+            i = get_next_max(i + 1, remaining, battery)
             banks.append(battery[i])
         sum_ += int(''.join(banks))
     return sum_
+
+
+def day_4(part='A') -> int:
+    warehouse = read_input(day=4, parse=lambda ln: [c == '@' for c in ln])
+    count, inbounds = 0, get_inbounds(warehouse)
+    for y, row in enumerate(warehouse):
+        for x, v in enumerate(row):
+            count += v and 4 > sum(
+                inbounds(y + yi, x + xi) and warehouse[y + yi][x + xi]
+                for yi, xi in DIRECTIONS)
+    return count
 
 
 if __name__ == '__main__':
