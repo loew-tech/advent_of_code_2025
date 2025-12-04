@@ -1,9 +1,9 @@
 from datetime import datetime
 from http import HTTPStatus
 import requests
-from typing import List, Callable, Iterable
+from typing import List, Callable
 
-from constants import ADVENT_URI
+from constants import ADVENT_URI, DIRECTIONS
 
 
 def read_input(
@@ -31,3 +31,23 @@ def get_inbounds(
 
 def inbounds(y, x: int, grid: List[List[any] | str]) -> bool:
     return 0 <= y < len(grid) and 0 <= x < len(grid[y])
+
+
+def day_4b_remove_rolls(counts: List[List[int]]) -> int:
+    to_move = ((y, x) for y, row in enumerate(counts)
+               for x, v in enumerate(row) if v < 4)
+    removed = set()
+    while to_move:
+        next_search = set()
+        for y, x in to_move:
+            if (y, x) in removed:
+                continue
+            removed.add((y, x))
+            for yi, xi in DIRECTIONS:
+                if not inbounds(y + yi, x + xi, counts):
+                    continue
+                counts[y+yi][x+xi] -= 1
+                if counts[y+yi][x+xi] < 4:
+                    next_search.add((y+yi, x+xi))
+        to_move = next_search
+    return len(removed)

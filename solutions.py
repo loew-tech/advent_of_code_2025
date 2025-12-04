@@ -2,7 +2,7 @@ import inspect
 import sys
 
 from constants import DIRECTIONS
-from utils import read_input, get_inbounds
+from utils import read_input, get_inbounds, day_4b_remove_rolls
 
 
 def day_1(part='A') -> int:
@@ -62,20 +62,17 @@ def day_3(part='A') -> int:
 
 def day_4(part='A') -> int:
     warehouse = read_input(day=4, parse=lambda ln: [c == '@' for c in ln])
-    counts = [[0 for _ in _] for _ in warehouse]
+    counts = [[0 if b else float('inf') for b in row] for row in warehouse]
     inbounds = get_inbounds(warehouse)
     for y, row in enumerate(warehouse):
         for x, v in enumerate(row):
-            if not v:
-                counts[y][x] = 5
-                continue
-            counts[y][x] = sum(
-                inbounds(y + yi, x + xi) and warehouse[y + yi][x + xi]
-                for yi, xi in DIRECTIONS)
+            counts[y][x] += sum(inbounds(y + yi, x + xi) and
+                                warehouse[y + yi][x + xi]
+                                for yi, xi in DIRECTIONS)
 
     if part.upper() == 'A':
         return sum(v < 4 for row in counts for v in row)
-    return NotImplemented
+    return day_4b_remove_rolls(counts)
 
 
 if __name__ == '__main__':
@@ -89,4 +86,4 @@ if __name__ == '__main__':
             print(f'{day}()= NotImplemented')
             continue
         print(f'{day}()= {funcs[day]()}')
-        # print(f'{day}(part="B")= {funcs[day](part="B")}')
+        print(f'{day}(part="B")= {funcs[day](part="B")}')
