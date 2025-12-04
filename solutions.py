@@ -62,13 +62,20 @@ def day_3(part='A') -> int:
 
 def day_4(part='A') -> int:
     warehouse = read_input(day=4, parse=lambda ln: [c == '@' for c in ln])
-    count, inbounds = 0, get_inbounds(warehouse)
+    counts = [[0 for _ in _] for _ in warehouse]
+    inbounds = get_inbounds(warehouse)
     for y, row in enumerate(warehouse):
         for x, v in enumerate(row):
-            count += v and 4 > sum(
+            if not v:
+                counts[y][x] = 5
+                continue
+            counts[y][x] = sum(
                 inbounds(y + yi, x + xi) and warehouse[y + yi][x + xi]
                 for yi, xi in DIRECTIONS)
-    return count
+
+    if part.upper() == 'A':
+        return sum(v < 4 for row in counts for v in row)
+    return NotImplemented
 
 
 if __name__ == '__main__':
@@ -82,4 +89,4 @@ if __name__ == '__main__':
             print(f'{day}()= NotImplemented')
             continue
         print(f'{day}()= {funcs[day]()}')
-        print(f'{day}(part="B")= {funcs[day](part="B")}')
+        # print(f'{day}(part="B")= {funcs[day](part="B")}')
