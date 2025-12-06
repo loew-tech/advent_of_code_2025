@@ -8,8 +8,8 @@ from constants import DIRECTIONS, OPS_DICT
 from utils import read_input, get_inbounds, day_4b_remove_rolls
 
 
-def day_1(part='A') -> int:
-    data = read_input(day=1)
+def day_1(part='A', test=False) -> int:
+    data = read_input(day=1, testing=test)
     position, count, sign = 50, 0, {'R': 1, 'L': -1}
     for direction, *magnitude in data:
         mag = int(''.join(magnitude))
@@ -20,8 +20,11 @@ def day_1(part='A') -> int:
     return count
 
 
-def day_2(part='A') -> int:
-    data = read_input(day=2, delim=',', parse=lambda x: map(int, x.split('-')))
+def day_2(part='A', test=False) -> int:
+    data = read_input(day=2,
+                      delim=',',
+                      parse=lambda x: map(int, x.split('-')),
+                      testing=test)
     sum_ = 0
     for low, high in data:
         for i in range(low, high + 1):
@@ -37,7 +40,7 @@ def day_2(part='A') -> int:
     return sum_
 
 
-def day_3(part='A') -> int:
+def day_3(part='A', test=False) -> int:
     abs_max = '9'
 
     def get_next_max(j, rem: int, bat: str) -> int:
@@ -49,7 +52,7 @@ def day_3(part='A') -> int:
                     break
         return index + j
 
-    data, sum_ = read_input(day=3), 0
+    data, sum_ = read_input(day=3, testing=test), 0
     sum_ = 0
 
     for battery in data:
@@ -63,8 +66,10 @@ def day_3(part='A') -> int:
     return sum_
 
 
-def day_4(part='A') -> int:
-    warehouse = read_input(day=4, parse=lambda ln: [c == '@' for c in ln])
+def day_4(part='A', test=False) -> int:
+    warehouse = read_input(day=4,
+                           parse=lambda ln: [c == '@' for c in ln],
+                           testing=test)
 
     counts = [[0 if b else float('inf') for b in row] for row in warehouse]
     inbounds = get_inbounds(warehouse)
@@ -79,7 +84,7 @@ def day_4(part='A') -> int:
     return day_4b_remove_rolls(counts)
 
 
-def day_5(part='A') -> int:
+def day_5(part='A', test=False) -> int:
     def merge(
             intervals: list[tuple[int, ...]]
     ) -> list[tuple[int, int]]:
@@ -100,7 +105,10 @@ def day_5(part='A') -> int:
         ing = map(int, ing.split('\n')[:-1])
         return merge(sorted(frsh, key=lambda x: (x[0], -x[1]))), ing
 
-    fresh, ingredients = read_input(day=5, delim='', parse=parse).pop()
+    fresh, ingredients = read_input(day=5,
+                                    delim='',
+                                    parse=parse,
+                                    testing=test).pop()
 
     if not part.upper() == 'A':
         return sum(stop + 1 - start for start, stop in fresh)
@@ -115,8 +123,8 @@ def day_5(part='A') -> int:
     return sum_
 
 
-def day_6(part='A') -> int:
-    def parse(data: str):
+def day_6(part='A', test=False) -> int:
+    def parse_a(data: str):
         lines = [[c for c in ln.split(' ') if c.strip()] for
                  ln in data.strip().split('\n')]
         return [list(reversed(x)) for x in zip(*lines)]
@@ -140,16 +148,15 @@ def day_6(part='A') -> int:
         probs.append([op_, *prob])
         return probs
 
-    if part.upper() == 'A':
-        problems = read_input(day=6, delim='', parse=parse)[0]
-    else:
-        problems = read_input(day=6, delim='', parse=parse_b)[0]
+    parse = parse_a if part.upper() == 'A' else parse_b
+    problems = read_input(day=6, delim='', parse=parse, testing=test,)[0]
     return sum(reduce(OPS_DICT[op], map(int, vals)) for op, *vals in problems)
 
 
 if __name__ == '__main__':
-    args = sys.argv[1:] if sys.argv[1:] else range(1, 12)
-    args = (f'day_{i}' for i in args)
+    testing = '-t' in sys.argv[1:]
+    args = (f'day_{i}' for i in (sys.argv[1:] if
+            sys.argv[1:] else range(1, 13)) if i.isnumeric())
     members = inspect.getmembers(inspect.getmodule(inspect.currentframe()))
     funcs = {name: member for name, member in members
              if inspect.isfunction(member)}
@@ -157,5 +164,5 @@ if __name__ == '__main__':
         if day not in funcs:
             print(f'{day}()= NotImplemented')
             continue
-        print(f'{day}()= {funcs[day]()}')
-        print(f'{day}(part="B")= {funcs[day](part="B")}')
+        print(f'{day}()= {funcs[day](test=testing)}')
+        print(f'{day}(part="B")= {funcs[day](part="B", test=testing)}')

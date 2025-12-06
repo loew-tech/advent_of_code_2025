@@ -6,15 +6,18 @@ from typing import List, Callable, Tuple
 from bs4 import BeautifulSoup
 
 from constants import ADVENT_URI, DIRECTIONS
+from dbg_utils import get_test_input
 
 
 def read_input(
         day: int | str,
         year: int | str = 2025,
         delim: str = '\n',
-        parse: Callable[[str], any] = None
+        parse: Callable[[str], any] = None,
+        testing: bool = False
 ) -> List[any] | str:
-    year = year if year is not None else datetime.now().year
+    if testing:
+        return _process_input(get_test_input(day, year), delim, parse)
     with open('.env') as env_:
         session_id = env_.read().strip().split('\n')[0]
     response = requests.get(f'{ADVENT_URI}{year}/day/{day}/input',
