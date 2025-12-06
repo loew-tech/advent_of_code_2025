@@ -20,7 +20,9 @@ def read_input(
     data = None
     if response.status_code == HTTPStatus.OK:
         data = response.text.strip().split(delim) if delim else response.text
-    return data if parse is None else [parse(e) for e in data]
+    return data if parse is None else [
+        parse(e) for e in (data if type(data) == list else [data])
+    ]
 
 
 def get_inbounds(
@@ -43,11 +45,11 @@ def day_4b_remove_rolls(counts: List[List[int]]):
             removed += 1
             for yi, xi in DIRECTIONS:
                 if not inbounds(y + yi, x + xi, counts) or \
-                        (y+yi, x+xi) in to_move:
+                        (y + yi, x + xi) in to_move:
                     continue
-                counts[y+yi][x+xi] -= 1
-                if counts[y+yi][x+xi] < 4:
-                    next_search.add((y+yi, x+xi))
+                counts[y + yi][x + xi] -= 1
+                if counts[y + yi][x + xi] < 4:
+                    next_search.add((y + yi, x + xi))
             counts[y][x] = float('inf')
         to_move = next_search
     return removed

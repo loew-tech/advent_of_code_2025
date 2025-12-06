@@ -1,3 +1,4 @@
+from bisect import bisect
 import inspect
 import sys
 
@@ -63,10 +64,6 @@ def day_3(part='A') -> int:
 def day_4(part='A') -> int:
     warehouse = read_input(day=4, parse=lambda ln: [c == '@' for c in ln])
 
-    # warehouse = '..@@.@@@@.\n@@@.@.@.@@\n@@@@@.@.@@\n@.@@@@..@.\n' \
-    #             '@@.@@@@.@@\n.@@@@@@@.@\n.@.@.@.@@@\n@.@@@.@@@@\n.@@@@@@@@.\n@.@.@@@.@.'
-    # warehouse = [[c == '@' for c in ln] for ln in warehouse.split('\n')]
-
     counts = [[0 if b else float('inf') for b in row] for row in warehouse]
     inbounds = get_inbounds(warehouse)
     for y, row in enumerate(warehouse):
@@ -78,6 +75,39 @@ def day_4(part='A') -> int:
     if part.upper() == 'A':
         return sum(v < 4 for row in counts for v in row)
     return day_4b_remove_rolls(counts)
+
+
+def day_5(part='A') -> int:
+    def merge(
+            intervals: list[tuple[int, ...]]
+    ) -> list[tuple[int, int]]:
+        merged = [intervals[0]]
+        for start, end in intervals[1:]:
+            last_start, last_end = merged[-1]
+            if start <= last_end:
+                merged[-1] = (last_end if last_start > start else last_start,
+                              max(last_end, end))
+            else:
+                merged.append((start, end))
+        return merged
+
+    def parse(data: str):
+        frsh, ing = data.split('\n\n')
+        frsh = [tuple(int(y) for y in x.split('-')) for
+                x in frsh.split('\n')]
+        ing = map(int, ing.split('\n')[:-1])
+        return merge(sorted(frsh, key=lambda x: (x[0], -x[1]))), ing
+
+    fresh, ingredients = read_input(day=5, delim='', parse=parse).pop()
+
+    n, sum_ = len(fresh), 0
+    for food in ingredients:
+        index = bisect(fresh, (food,))
+        if index == -1:
+            continue
+        sum_ += not index == -1 and \
+            fresh[index-1][0] <= food <= fresh[index-1][1]
+    return sum_
 
 
 if __name__ == '__main__':
