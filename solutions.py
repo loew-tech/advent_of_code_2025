@@ -2,6 +2,7 @@ from bisect import bisect
 from functools import reduce
 import inspect
 import sys
+from typing import List
 
 from constants import DIRECTIONS, OPS_DICT
 from utils import read_input, get_inbounds, day_4b_remove_rolls
@@ -110,7 +111,7 @@ def day_5(part='A') -> int:
         if index == -1:
             continue
         sum_ += not index == -1 and \
-            fresh[index-1][0] <= food <= fresh[index-1][1]
+                fresh[index - 1][0] <= food <= fresh[index - 1][1]
     return sum_
 
 
@@ -120,7 +121,29 @@ def day_6(part='A') -> int:
                  ln in data.strip().split('\n')]
         return [list(reversed(x)) for x in zip(*lines)]
 
-    problems = read_input(day=6, delim='', parse=parse)[0]
+    def parse_b(data: str):
+        lines = [[*ln] for
+                 ln in data.rstrip().split('\n')]
+        max_ = max(len(ln) for ln in lines)
+        lines = [['']*(max_ - len(ln)) + ln for ln in lines]
+        lines = [list(x) for x in zip(*lines)]
+        probs, prob, op_ = [], [], None
+        for *p, o in lines:
+            if o in OPS_DICT:
+                op_ = o
+            num = ''.join(p).strip()
+            if not num:
+                probs.append([op_, *prob])
+                prob, op_ = [], None
+                continue
+            prob.append(num)
+        probs.append([op_, *prob])
+        return probs
+
+    if part.upper() == 'A':
+        problems = read_input(day=6, delim='', parse=parse)[0]
+    else:
+        problems = read_input(day=6, delim='', parse=parse_b)[0]
     return sum(reduce(OPS_DICT[op], map(int, vals)) for op, *vals in problems)
 
 
