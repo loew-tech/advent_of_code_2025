@@ -1,8 +1,9 @@
 from bisect import bisect
+from functools import reduce
 import inspect
 import sys
 
-from constants import DIRECTIONS
+from constants import DIRECTIONS, OPS_DICT
 from utils import read_input, get_inbounds, day_4b_remove_rolls
 
 
@@ -111,6 +112,16 @@ def day_5(part='A') -> int:
         sum_ += not index == -1 and \
             fresh[index-1][0] <= food <= fresh[index-1][1]
     return sum_
+
+
+def day_6(part='A') -> int:
+    def parse(data: str):
+        lines = [[c for c in ln.split(' ') if c.strip()] for
+                 ln in data.strip().split('\n')]
+        return [list(reversed(x)) for x in zip(*lines)]
+
+    problems = read_input(day=6, delim='', parse=parse)[0]
+    return sum(reduce(OPS_DICT[op], map(int, vals)) for op, *vals in problems)
 
 
 if __name__ == '__main__':
