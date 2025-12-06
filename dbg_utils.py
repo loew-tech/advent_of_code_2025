@@ -13,9 +13,9 @@ def get_test_input(
 ) -> str:
     problem = requests.get(f'{ADVENT_URI}{year}/day/{day}')
     soup = BeautifulSoup(problem.content, 'html.parser')
-    # @TODO: handle retrieving test input for part b
     input_ = soup.find('pre').code
     # @TODO: handle validating against this
+    # @TODO: handle getting answer for part 2
     # answer = soup.find_all('code')[:-1]
     return input_.get_text()
 
