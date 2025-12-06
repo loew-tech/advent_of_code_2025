@@ -1,3 +1,6 @@
+from operator import add, mul, sub, truediv, floordiv
+
+
 ADVENT_URI = 'https://adventofcode.com/'
 
 
@@ -7,3 +10,5 @@ DIRECTIONS = tuple((i, j) for i in range(-1, 2)
 
 CARDINAL_DIRECTIONS = tuple((i, j) for i, j in DIRECTIONS
                             if not abs(i) == abs(j))
+
+OPS_DICT = {'+': add, '*': mul, '-': sub, '/': truediv, '//': floordiv}
