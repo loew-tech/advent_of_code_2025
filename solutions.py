@@ -100,6 +100,9 @@ def day_5(part='A') -> int:
 
     fresh, ingredients = read_input(day=5, delim='', parse=parse).pop()
 
+    if not part.upper() == 'A':
+        return sum(stop + 1 - start for start, stop in fresh)
+
     n, sum_ = len(fresh), 0
     for food in ingredients:
         index = bisect(fresh, (food,))
