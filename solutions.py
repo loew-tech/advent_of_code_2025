@@ -2,10 +2,10 @@ from bisect import bisect
 from functools import reduce
 import inspect
 import sys
-from typing import List
 
-from constants import DIRECTIONS, OPS_DICT
-from utils import read_input, get_inbounds, day_4b_remove_rolls
+from constants import OPS_DICT
+from helpers import *
+from utils import read_input, get_inbounds
 
 
 def day_1(part='A', test=False) -> int:
