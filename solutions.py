@@ -1,4 +1,5 @@
 from bisect import bisect
+from collections import defaultdict
 from functools import reduce
 import inspect
 import sys
@@ -157,19 +158,24 @@ def day_7(part='A', test=False) -> int:
     grid = read_input(day=7, delim='\n', testing=test)
     inbounds_ = get_inbounds(grid)
 
-    cond_add = lambda s, y_, x_: inbounds_(y_, x_) and s.add(x_)
-    to_search, splits, y = {grid[0].index('S')}, 0, 0
+    def cond_add(d: defaultdict, y_, x_, cnt_: int) -> None:
+        if not inbounds_(y_, x_):
+            return
+        d[x_] += cnt_
+
+    splits, y = 0, 0
+    (to_search := defaultdict(int))[grid[0].index('S')] = 1
     while to_search and (y := y+1):
-        next_search = set()
-        for x in to_search:
+        next_search = defaultdict(int)
+        for x, cnt in to_search.items():
             if grid[y][x] == '^':
-                splits += 1
-                cond_add(next_search, y, x-1)
-                cond_add(next_search, y, x+1)
+                splits += 1 if part.upper() == 'A' else cnt
+                cond_add(next_search, y, x-1, cnt)
+                cond_add(next_search, y, x+1, cnt)
                 continue
-            cond_add(next_search, y+1, x)
+            cond_add(next_search, y+1, x, cnt)
         to_search = next_search
-    return splits
+    return splits + (not part.upper() == 'A')
 
 
 if __name__ == '__main__':
