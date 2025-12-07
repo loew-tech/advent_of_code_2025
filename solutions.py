@@ -4,6 +4,7 @@ import inspect
 import sys
 
 from constants import OPS_DICT
+from dbg_utils import get_answer
 from helpers import *
 from utils import read_input, get_inbounds
 
@@ -153,15 +154,38 @@ def day_6(part='A', test=False) -> int:
 
 
 if __name__ == '__main__':
+    def print_result(d: int,
+                     expected, part: str,
+                     result: int | str) -> None:
+        if expected == str(result):
+            print(f'PASS {d}{part}: {d}({part}) = {result}.')
+            return
+        print(f'FAILED {d}{part}: Expected = {expected}. {d}({part}) ='
+              f' {result}')
+
+    def test_days(days):
+        for day_ in days:
+            expected, result = get_answer(day=day_), funcs[day_](test=True)
+            print_result(day_, expected, 'A', result)
+
+            expected = get_answer(day=day_, part='B')
+            result = funcs[day_](test=True, part='B')
+            print_result(day_, expected, 'B', result)
+
+
     testing = '-t' in sys.argv[1:]
     args = (f'day_{i}' for i in (sys.argv[1:] if
             sys.argv[1:] else range(1, 13)) if i.isnumeric())
     members = inspect.getmembers(inspect.getmodule(inspect.currentframe()))
     funcs = {name: member for name, member in members
              if inspect.isfunction(member)}
+
+    if testing:
+        test_days(args)
+
     for day in args:
         if day not in funcs:
             print(f'{day}()= NotImplemented')
             continue
-        print(f'{day}()= {funcs[day](test=testing)}')
-        print(f'{day}(part="B")= {funcs[day](part="B", test=testing)}')
+        print(f'{day}() = {funcs[day]()}')
+        print(f'{day}(part="B") = {funcs[day](part="B")}')
