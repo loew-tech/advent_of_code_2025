@@ -13,7 +13,6 @@ def get_test_input(
         year: int | str = 2025,
 ) -> str:
     if os.path.exists(f'{TESTS_PATH}{day}.txt'):
-        print(f'retrieving {day} test from file')
         with open(f'{TESTS_PATH}{day}.txt') as in_:
             return in_.read()
 

@@ -72,10 +72,10 @@ def day_4(part='A', test=False) -> int:
                            testing=test)
 
     counts = [[0 if b else float('inf') for b in row] for row in warehouse]
-    inbounds = get_inbounds(warehouse)
+    inbounds_ = get_inbounds(warehouse)
     for y, row in enumerate(warehouse):
         for x, v in enumerate(row):
-            counts[y][x] += sum(inbounds(y + yi, x + xi) and
+            counts[y][x] += sum(inbounds_(y + yi, x + xi) and
                                 warehouse[y + yi][x + xi]
                                 for yi, xi in DIRECTIONS)
 
@@ -118,8 +118,7 @@ def day_5(part='A', test=False) -> int:
         index = bisect(fresh, (food,))
         if index == -1:
             continue
-        sum_ += not index == -1 and \
-                fresh[index - 1][0] <= food <= fresh[index - 1][1]
+        sum_ += fresh[index - 1][0] <= food <= fresh[index - 1][1]
     return sum_
 
 

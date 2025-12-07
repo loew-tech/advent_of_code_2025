@@ -1,9 +1,9 @@
 import os.path
 from http import HTTPStatus
 import requests
-from typing import List, Callable, Tuple
+from typing import List, Callable
 
-from constants import ADVENT_URI, DIRECTIONS, INPUTS_PATH
+from constants import ADVENT_URI, INPUTS_PATH
 from dbg_utils import get_test_input
 
 
@@ -18,7 +18,6 @@ def read_input(
         return _process_input(get_test_input(day, year), delim, parse)
 
     if os.path.exists(f'{INPUTS_PATH}{day}.txt'):
-        print(f'retrieving {day} input from file')
         with open(f'{INPUTS_PATH}{day}.txt') as in_:
             return _process_input(in_.read(), delim, parse)
 

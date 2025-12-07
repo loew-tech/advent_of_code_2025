@@ -1,4 +1,3 @@
-# @TODO: move to helpers
 from typing import List
 
 from constants import DIRECTIONS
