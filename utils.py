@@ -1,11 +1,9 @@
-from datetime import datetime
+import os.path
 from http import HTTPStatus
 import requests
 from typing import List, Callable, Tuple
 
-from bs4 import BeautifulSoup
-
-from constants import ADVENT_URI, DIRECTIONS
+from constants import ADVENT_URI, DIRECTIONS, INPUTS_PATH
 from dbg_utils import get_test_input
 
 
@@ -18,12 +16,23 @@ def read_input(
 ) -> List[any] | str:
     if testing:
         return _process_input(get_test_input(day, year), delim, parse)
+
+    if os.path.exists(f'{INPUTS_PATH}{day}.txt'):
+        print(f'retrieving {day} input from file')
+        with open(f'{INPUTS_PATH}{day}.txt') as in_:
+            return _process_input(in_.read(), delim, parse)
+
     with open('.env') as env_:
         session_id = env_.read().strip().split('\n')[0]
     response = requests.get(f'{ADVENT_URI}{year}/day/{day}/input',
                             cookies={'session': session_id})
+
     if not response.status_code == HTTPStatus.OK:
         raise Exception(f'Failed to acquire input from {ADVENT_URI}')
+    if not os.path.exists(INPUTS_PATH):
+        os.mkdir(INPUTS_PATH)
+    with open(f'{INPUTS_PATH}{day}.txt', 'w') as out:
+        out.write(response.text)
     return _process_input(response.text, delim, parse)
 
 
