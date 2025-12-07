@@ -26,7 +26,7 @@ def get_test_input(
     return txt
 
 
-def get_answer(
+def get_expected(
         day: int | str,
         year: int | str = 2025,
         part='A'
@@ -44,6 +44,8 @@ def get_answer(
     problem = requests.get(f'{ADVENT_URI}{year}/day/{day.replace("day_", "")}',
                            cookies=cookies)
     soup = BeautifulSoup(problem.content, 'html.parser')
+    if not part.upper() == 'A' and 'Part Two' not in soup.prettify():
+        return 'UNLOCK PART 2 TO TEST'
     expected = ''
     for c in soup.find_all('code'):
         if em := c.find('em'):

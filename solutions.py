@@ -4,7 +4,7 @@ import inspect
 import sys
 
 from constants import OPS_DICT
-from dbg_utils import get_answer
+from dbg_utils import get_expected
 from helpers import *
 from utils import read_input, get_inbounds
 
@@ -153,6 +153,25 @@ def day_6(part='A', test=False) -> int:
     return sum(reduce(OPS_DICT[op], map(int, vals)) for op, *vals in problems)
 
 
+def day_7(part='A', test=False) -> int:
+    grid = read_input(day=7, delim='\n', testing=test)
+    inbounds_ = get_inbounds(grid)
+
+    cond_add = lambda s, y_, x_: inbounds_(y_, x_) and s.add(x_)
+    to_search, splits, y = {grid[0].index('S')}, 0, 0
+    while to_search and (y := y+1):
+        next_search = set()
+        for x in to_search:
+            if grid[y][x] == '^':
+                splits += 1
+                cond_add(next_search, y, x-1)
+                cond_add(next_search, y, x+1)
+                continue
+            cond_add(next_search, y+1, x)
+        to_search = next_search
+    return splits
+
+
 if __name__ == '__main__':
     def print_result(d: int,
                      expected, part: str,
@@ -165,10 +184,13 @@ if __name__ == '__main__':
 
     def test_days(days):
         for day_ in days:
-            expected, result = get_answer(day=day_), funcs[day_](test=True)
+            if day_ not in funcs:
+                print(f'{day}()= NotImplemented')
+                continue
+            expected, result = get_expected(day=day_), funcs[day_](test=True)
             print_result(day_, expected, 'A', result)
 
-            expected = get_answer(day=day_, part='B')
+            expected = get_expected(day=day_, part='B')
             result = funcs[day_](test=True, part='B')
             print_result(day_, expected, 'B', result)
 
