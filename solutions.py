@@ -247,6 +247,17 @@ def day_8(part='A', test=False) -> int:
     return b1[0] * b2[0]
 
 
+def day_9(part='A', test=False) -> int:
+    data = read_input(day=9,
+                      parse=lambda pt: tuple(map(int, pt.split(','))),
+                      testing=test)
+    max_ = -1
+    for i, (x, y) in enumerate(data):
+        for (x_, y_) in data[i+1:]:
+            max_ = max(max_, (abs(x - x_) + 1) * (abs(y - y_) + 1))
+    return max_
+
+
 if __name__ == '__main__':
     def print_result(d: int,
                      expected, part: str,
