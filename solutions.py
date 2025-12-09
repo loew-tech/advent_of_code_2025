@@ -224,7 +224,27 @@ def day_8(part='A', test=False) -> int:
     prod = 1
     for _ in range(3):
         prod *= -heapq.heappop(h2)
-    return prod
+    if part.upper() == 'A':
+        return prod
+
+    # @TODO: tidy this up -> spanning tree
+    b1, b2 = (0,), (0,)
+    while not len([*box_to_circuit.values()][0]) == len(data):
+        _, b1, b2 = heapq.heappop(distances)
+        if b1 in box_to_circuit and b2 in box_to_circuit:
+            for b in box_to_circuit[b2]:
+                box_to_circuit[b1].add(b)
+                box_to_circuit[b] = box_to_circuit[b1]
+        elif b1 in box_to_circuit:
+            box_to_circuit[b1].add(b2)
+        elif b2 in box_to_circuit:
+            box_to_circuit[b2].add(b1)
+            box_to_circuit[b1] = box_to_circuit[b2]
+        else:
+            box_to_circuit[b1] = {b1, b2}
+        box_to_circuit[b2] = box_to_circuit[b1]
+
+    return b1[0] * b2[0]
 
 
 if __name__ == '__main__':
