@@ -47,11 +47,7 @@ def day_9b_largest_inner_rectangle(
         ar = -ar
         x_min, x_max = min(data[i][0], data[j][0]), max(data[i][0], data[j][0])
         y_min, y_max = min(data[i][1], data[j][1]), max(data[i][1], data[j][1])
-        bad = False
-        for x, y in perimeter:
-            if bad := x_min < x < x_max and y_min < y < y_max:
-                break
-        if bad:
+        if any(x_min < x < x_max and y_min < y < y_max for x, y in perimeter):
             continue
         return ar
     return -1
