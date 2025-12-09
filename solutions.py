@@ -1,3 +1,4 @@
+import heapq
 from bisect import bisect
 from collections import defaultdict
 from functools import reduce
@@ -176,6 +177,54 @@ def day_7(part='A', test=False) -> int:
             cond_add(next_search, y+1, x, cnt)
         to_search = next_search
     return splits + (not part.upper() == 'A')
+
+
+def day_8(part='A', test=False) -> int:
+    def distance(pt, pt2) -> int:
+        return sum((p - pt2[i_])**2 for i_, p in enumerate(pt))
+
+    data = read_input(day=8,
+                      parse=lambda x: tuple(map(int, x.split(','))),
+                      testing=test)
+
+    edges = set()
+    distances = []
+    for i, box in enumerate(data):
+        for j, b in enumerate(data):
+            if (i, j) in edges or i == j:
+                continue
+            distances.append((distance(box, b), box, b))
+            edges.add((i, j))
+            edges.add((j, i))
+    heapq.heapify(distances)
+
+    box_to_circuit = {}
+    for i in range(10 if testing else 1_000):
+        _, b1, b2 = heapq.heappop(distances)
+        if b1 in box_to_circuit and b2 in box_to_circuit:
+            for b in box_to_circuit[b2]:
+                box_to_circuit[b1].add(b)
+                box_to_circuit[b] = box_to_circuit[b1]
+        elif b1 in box_to_circuit:
+            box_to_circuit[b1].add(b2)
+        elif b2 in box_to_circuit:
+            box_to_circuit[b2].add(b1)
+            box_to_circuit[b1] = box_to_circuit[b2]
+        else:
+            box_to_circuit[b1] = {b1, b2}
+        box_to_circuit[b2] = box_to_circuit[b1]
+
+    used, h2 = set(), []
+    for k, set_ in box_to_circuit.items():
+        if k in used:
+            continue
+        used = {*used, *set_}
+        heapq.heappush(h2, -len(set_))
+
+    prod = 1
+    for _ in range(3):
+        prod *= -heapq.heappop(h2)
+    return prod
 
 
 if __name__ == '__main__':
