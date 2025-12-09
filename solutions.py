@@ -252,13 +252,19 @@ def day_9(part='A', test=False) -> int:
                       parse=lambda pt: tuple(map(int, pt.split(','))),
                       testing=test)
 
-    def distance(x, y, x_, y_) -> int:
-        return (abs(x - x_) + 1) * (abs(y - y_) + 1)
+    def area(xx, yy, xx_, yy_) -> int:
+        return (abs(xx - xx_) + 1) * (abs(yy - yy_) + 1)
 
-    if part.upper() == 'A':
-        return max(distance(x, y, x_, y_) for i, (x, y) in enumerate(data)
-                   for x_, y_ in data[i+1:])
-    return NotImplemented
+    max_, areas = -1, []
+    for i, (x, y) in enumerate(data):
+        for j in range(i+1, len(data)):
+            x_, y_ = data[j]
+            a = area(x, y, x_, y_)
+            max_ = max(max_, a)
+            heapq.heappush(areas, (-a, (i, j)))
+
+    return max_ if part.upper() == 'A' else \
+        day_9b_largest_inner_rectangle(data, areas)
 
 
 if __name__ == '__main__':
