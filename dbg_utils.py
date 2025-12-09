@@ -31,6 +31,8 @@ def get_expected(
         year: int | str = 2025,
         part='A'
 ) -> str:
+    if not os.path.exists(TESTS_PATH):
+        os.mkdir(TESTS_PATH)
     file_ = f'{TESTS_PATH}{day}{part}_expected.txt'
     if os.path.exists(file_):
         with open(file_) as in_:
@@ -44,17 +46,20 @@ def get_expected(
     problem = requests.get(f'{ADVENT_URI}{year}/day/{day.replace("day_", "")}',
                            cookies=cookies)
     soup = BeautifulSoup(problem.content, 'html.parser')
+
     if not part.upper() == 'A' and 'Part Two' not in soup.prettify():
         return 'UNLOCK PART 2 TO TEST'
     expected = ''
-    for c in soup.find_all('code'):
-        if em := c.find('em'):
-            expected = em.get_text()
+    for p in soup.find_all('p'):
+        for c in p.find_all('code'):
+            if em := c.find('em'):
+                expected = em.get_text()
 
     if not expected.strip():
-        for em in soup.find_all('em'):
-            if code := em.find('code'):
-                expected = code.get_text()
+        for p in soup.find_all('p'):
+            for em in p.find_all('em'):
+                if code := em.find('code'):
+                    expected = code.get_text()
 
     with open(file_, 'w') as out:
         out.write(expected)
