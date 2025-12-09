@@ -251,11 +251,14 @@ def day_9(part='A', test=False) -> int:
     data = read_input(day=9,
                       parse=lambda pt: tuple(map(int, pt.split(','))),
                       testing=test)
-    max_ = -1
-    for i, (x, y) in enumerate(data):
-        for (x_, y_) in data[i+1:]:
-            max_ = max(max_, (abs(x - x_) + 1) * (abs(y - y_) + 1))
-    return max_
+
+    def distance(x, y, x_, y_) -> int:
+        return (abs(x - x_) + 1) * (abs(y - y_) + 1)
+
+    if part.upper() == 'A':
+        return max(distance(x, y, x_, y_) for i, (x, y) in enumerate(data)
+                   for x_, y_ in data[i+1:])
+    return NotImplemented
 
 
 if __name__ == '__main__':
