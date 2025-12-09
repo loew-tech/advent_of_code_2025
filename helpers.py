@@ -31,15 +31,14 @@ def day_9b_largest_inner_rectangle(
 ) -> int:
     def get_perimeter():
         p = set()
-        for i_ in range(len(data)):
-            x1, y1 = data[i_-1]
-            x2, y2 = data[i_]
-            if x1 == x2:
-                for y_ in range(min(y1, y2), max(y1, y2) + 1):
-                    p.add((x1, y_))
-            elif y1 == y2:
-                for x_ in range(min(x1, x2), max(x1, x2) + 1):
-                    p.add((x_, y1))
+        for i_, (x2, y2) in enumerate(data):
+            x1, y1 = data[i_ - 1]
+            x1, x2 = (x1, x2) if x1 <= x2 else (x2, x1)
+            y1, y2 = (y1, y2) if y1 <= y2 else (y2, y1)
+            for x_ in range(x1, x2+1):
+                p.add((x_, y1))
+            for y_ in range(y1, y2+1):
+                p.add((x1, y_))
         return p
 
     max_, perimeter = None, get_perimeter()
