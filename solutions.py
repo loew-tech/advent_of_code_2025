@@ -269,6 +269,9 @@ def day_9(part='A', test=False) -> int:
 
 
 def day_10(part='A', test=False) -> int:
+    if not part.upper() == 'A':
+        return NotImplemented
+    
     data = read_input(day=10,
                       parse=Machine.from_line,
                       testing=test)
