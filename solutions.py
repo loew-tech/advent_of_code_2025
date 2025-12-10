@@ -6,6 +6,7 @@ import inspect
 import sys
 
 from constants import OPS_DICT
+from classes import Machine
 from dbg_utils import get_expected
 from helpers import *
 from utils import read_input, get_inbounds
@@ -265,6 +266,13 @@ def day_9(part='A', test=False) -> int:
 
     return max_ if part.upper() == 'A' else \
         day_9b_largest_inner_rectangle(data, areas)
+
+
+def day_10(part='A', test=False) -> int:
+    data = read_input(day=10,
+                      parse=Machine.from_line,
+                      testing=test)
+    return sum(machine.turn_on() for machine in data)
 
 
 if __name__ == '__main__':
