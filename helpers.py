@@ -1,5 +1,5 @@
 import heapq
-from typing import List, Tuple, Callable, Set
+from typing import List, Tuple, Callable, Set, Dict
 
 from constants import DIRECTIONS
 from utils import inbounds
@@ -51,3 +51,14 @@ def day_9b_largest_inner_rectangle(
             continue
         return ar
     return -1
+
+
+def day_11_dfs(graph: Dict[str, List[str]], start, stop: str) -> int:
+    to_search, visited, cnt = graph.get(start, []), set(), 0
+    while to_search:
+        node = to_search.pop()
+        visited.add(node)
+        cnt += node == stop
+        to_search.extend(graph.get(node, []))
+    return cnt
+

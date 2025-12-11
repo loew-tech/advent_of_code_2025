@@ -291,20 +291,7 @@ def day_11(part='A', test=False) -> int:
                        delim=None,
                        parse=parse,
                        testing=test)[0]
-
-    to_search, cnt = graph.get('you', []), 0
-    while to_search:
-        next_search = []
-        # print(to_search)
-        for src in to_search:
-            for dest in graph.get(src, []):
-                if dest == 'out':
-                    # print(f'\t{src} found out')
-                    cnt += 1
-                    continue
-                next_search.append(dest)
-        to_search = next_search
-    return cnt
+    return day_11_dfs(graph, 'you', 'out')
 
 
 if __name__ == '__main__':
