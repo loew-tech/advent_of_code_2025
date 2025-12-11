@@ -10,7 +10,7 @@ from dbg_utils import get_test_input
 def read_input(
         day: int | str,
         year: int | str = 2025,
-        delim: str = '\n',
+        delim: str | None = '\n',
         parse: Callable[[str], any] = None,
         testing: bool = False
 ) -> List[any] | str:

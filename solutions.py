@@ -4,6 +4,7 @@ from collections import defaultdict
 from functools import reduce
 import inspect
 import sys
+from typing import Dict
 
 from constants import OPS_DICT
 from classes import Machine
@@ -276,6 +277,34 @@ def day_10(part='A', test=False) -> int:
                       parse=Machine.from_line,
                       testing=test)
     return sum(machine.turn_on() for machine in data)
+
+
+def day_11(part='A', test=False) -> int:
+    def parse(data: str) -> Dict[str, List[str]]:
+        data, graph_ = data.strip().split('\n'), {}
+        for ln in data:
+            src_, dests_ = ln.split(':')
+            graph_[src_] = dests_.strip().split()
+        return graph_
+
+    graph = read_input(day=11,
+                       delim=None,
+                       parse=parse,
+                       testing=test)[0]
+
+    to_search, cnt = graph.get('you', []), 0
+    while to_search:
+        next_search = []
+        # print(to_search)
+        for src in to_search:
+            for dest in graph.get(src, []):
+                if dest == 'out':
+                    # print(f'\t{src} found out')
+                    cnt += 1
+                    continue
+                next_search.append(dest)
+        to_search = next_search
+    return cnt
 
 
 if __name__ == '__main__':
