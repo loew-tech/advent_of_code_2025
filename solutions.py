@@ -287,11 +287,24 @@ def day_11(part='A', test=False) -> int:
             graph_[src_] = Node(src_, dests_.strip().split())
         return graph_
 
+    def get_graph_copy():
+        return {k: node_.copy() for k, node_ in graph.items()}
+
     graph = read_input(day=11,
                        delim=None,
                        parse=parse,
                        testing=test)[0]
-    return day_11_dfs(graph, 'you', 'out')
+
+    if part.upper() == 'A':
+        return day_11_dfs(graph, 'you', 'out')
+
+    mid1, mid2 = 'dac', 'fft'
+    if not (mid_paths := day_11_dfs(get_graph_copy(), mid1, mid2)):
+        mid1, mid2 = mid2, mid1
+        mid_paths = day_11_dfs(get_graph_copy(), mid1, mid2)
+    paths_to_mid1 = day_11_dfs(get_graph_copy(), 'svr', mid1)
+    paths_to_end = day_11_dfs(get_graph_copy(), mid2, 'out')
+    return paths_to_mid1 * mid_paths * paths_to_end
 
 
 if __name__ == '__main__':

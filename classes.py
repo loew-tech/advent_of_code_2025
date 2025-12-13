@@ -1,3 +1,4 @@
+import copy
 from typing import List, Set, Tuple
 
 
@@ -47,6 +48,9 @@ class Node:
     def get_current_neighbor(self) -> str:
         return self.neighbors[self._i] if self._i < len(self.neighbors) \
             else None
+
+    def copy(self):
+        return copy.copy(self)
 
     def __repr__(self):
         return f'Node({self.id_}, {self.neighbors}, {self._i})'
