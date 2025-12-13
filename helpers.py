@@ -1,6 +1,8 @@
 import heapq
+from collections import defaultdict
 from typing import List, Tuple, Callable, Set, Dict
 
+from classes import Node
 from constants import DIRECTIONS
 from utils import inbounds
 
@@ -53,12 +55,21 @@ def day_9b_largest_inner_rectangle(
     return -1
 
 
-def day_11_dfs(graph: Dict[str, List[str]], start, stop: str) -> int:
-    to_search, visited, cnt = graph.get(start, []), set(), 0
-    while to_search:
-        node = to_search.pop()
-        visited.add(node)
-        cnt += node == stop
-        to_search.extend(graph.get(node, []))
-    return cnt
+def day_11_dfs(graph: Dict[str, Node], start, stop: str) -> int:
+    def append_non_none(v: str | None) -> None:
+        if v in graph:
+            to_search.append(graph[v])
 
+    paths_to_stop, to_search, cnt = defaultdict(int), [graph[start]], 0
+    while to_search:
+        while to_search and to_search[-1].get_current_neighbor() is None:
+            to_search.pop()
+        if not to_search:
+            return paths_to_stop[start]
+        nghbor = to_search[-1].get_next_neighbor()
+        if nghbor == stop or nghbor in paths_to_stop:
+            new_paths = 1 if nghbor == stop else paths_to_stop[nghbor]
+            for n in to_search:
+                paths_to_stop[n.id_] += new_paths
+        append_non_none(nghbor)
+    return paths_to_stop[start]

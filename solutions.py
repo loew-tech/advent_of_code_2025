@@ -7,7 +7,7 @@ import sys
 from typing import Dict
 
 from constants import OPS_DICT
-from classes import Machine
+from classes import Machine, Node
 from dbg_utils import get_expected
 from helpers import *
 from utils import read_input, get_inbounds
@@ -280,11 +280,11 @@ def day_10(part='A', test=False) -> int:
 
 
 def day_11(part='A', test=False) -> int:
-    def parse(data: str) -> Dict[str, List[str]]:
+    def parse(data: str) -> Dict[str, Node]:
         data, graph_ = data.strip().split('\n'), {}
         for ln in data:
             src_, dests_ = ln.split(':')
-            graph_[src_] = dests_.strip().split()
+            graph_[src_] = Node(src_, dests_.strip().split())
         return graph_
 
     graph = read_input(day=11,

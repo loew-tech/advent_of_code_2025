@@ -32,3 +32,21 @@ class Machine:
 
     def __repr__(self):
         return f'Machine({self.lights}, {self.btns}, {self.voltages})'
+
+
+class Node:
+
+    def __init__(self, id_: str, neighbors: List[str]):
+        self.id_, self.neighbors, self._i = id_, neighbors, 0
+
+    def get_next_neighbor(self) -> str | None:
+        self._i += 1
+        return self.neighbors[self._i-1] if self._i-1 < len(self.neighbors) \
+            else None
+
+    def get_current_neighbor(self) -> str:
+        return self.neighbors[self._i] if self._i < len(self.neighbors) \
+            else None
+
+    def __repr__(self):
+        return f'Node({self.id_}, {self.neighbors}, {self._i})'
